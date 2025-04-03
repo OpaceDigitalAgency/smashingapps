@@ -1,0 +1,36 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+
+[dev]
+  command = "npm run dev"
+  port = 8888
+  targetPort = 5173
+  publish = "dist"
+  autoLaunch = true
+  framework = "vite"
+
+# Redirect root to homepage
+[[redirects]]
+  from = "/"
+  to = "/index.html"
+  status = 200
+
+# Redirect /tools/task-smasher/* to the task-smasher app
+[[redirects]]
+  from = "/tools/task-smasher/*"
+  to = "/tools/task-smasher/index.html"
+  status = 200
+
+# API redirects for serverless functions
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+# Catch-all redirect for SPA - must be at the very bottom
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
