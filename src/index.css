@@ -44,3 +44,24 @@ body {
   content: "\201C";
   @apply absolute text-8xl text-primary opacity-20 -top-4 -left-2 font-bold;
 }
+
+/* Page transition effect */
+body.page-transition {
+  @apply opacity-0 transition-opacity duration-300 ease-out;
+  animation: fadeOut 0.3s ease-out forwards;
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* Add a matching fade-in effect for the TaskSmasher app */
+.fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

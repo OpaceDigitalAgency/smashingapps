@@ -1,50 +1,11 @@
-# Root application redirects
-/ /index.html 200
+# Redirects for SmashingApps.ai unified application
 
-# TaskSmasher app redirects - handle with and without trailing slashes
-/tools/task-smasher /tools/task-smasher/index.html 200
-/tools/task-smasher/ /tools/task-smasher/index.html 200
+# SPA Redirects - let React Router handle all routing
+/                 /index.html            200
+/tools/*          /index.html            200
 
-# Use case redirects - handle with and without trailing slashes
-/tools/task-smasher/marketing-tasks /tools/task-smasher/marketing-tasks/index.html 200
-/tools/task-smasher/marketing-tasks/ /tools/task-smasher/marketing-tasks/index.html 200
+# API Redirects
+/api/*            /.netlify/functions/:splat    200
 
-/tools/task-smasher/daily-organizer /tools/task-smasher/daily-organizer/index.html 200
-/tools/task-smasher/daily-organizer/ /tools/task-smasher/daily-organizer/index.html 200
-
-/tools/task-smasher/goal-planner /tools/task-smasher/goal-planner/index.html 200
-/tools/task-smasher/goal-planner/ /tools/task-smasher/goal-planner/index.html 200
-
-/tools/task-smasher/recipe-steps /tools/task-smasher/recipe-steps/index.html 200
-/tools/task-smasher/recipe-steps/ /tools/task-smasher/recipe-steps/index.html 200
-
-/tools/task-smasher/home-chores /tools/task-smasher/home-chores/index.html 200
-/tools/task-smasher/home-chores/ /tools/task-smasher/home-chores/index.html 200
-
-/tools/task-smasher/freelancer-projects /tools/task-smasher/freelancer-projects/index.html 200
-/tools/task-smasher/freelancer-projects/ /tools/task-smasher/freelancer-projects/index.html 200
-
-/tools/task-smasher/trip-planner /tools/task-smasher/trip-planner/index.html 200
-/tools/task-smasher/trip-planner/ /tools/task-smasher/trip-planner/index.html 200
-
-/tools/task-smasher/shopping-tasks /tools/task-smasher/shopping-tasks/index.html 200
-/tools/task-smasher/shopping-tasks/ /tools/task-smasher/shopping-tasks/index.html 200
-
-/tools/task-smasher/study-plan /tools/task-smasher/study-plan/index.html 200
-/tools/task-smasher/study-plan/ /tools/task-smasher/study-plan/index.html 200
-
-/tools/task-smasher/event-planning /tools/task-smasher/event-planning/index.html 200
-/tools/task-smasher/event-planning/ /tools/task-smasher/event-planning/index.html 200
-
-/tools/task-smasher/diy-projects /tools/task-smasher/diy-projects/index.html 200
-/tools/task-smasher/diy-projects/ /tools/task-smasher/diy-projects/index.html 200
-
-/tools/task-smasher/creative-projects /tools/task-smasher/creative-projects/index.html 200
-/tools/task-smasher/creative-projects/ /tools/task-smasher/creative-projects/index.html 200
-# API redirects
-/api/* /.netlify/functions/:splat 200
-/tools/task-smasher/api/* /.netlify/functions/:splat 200
-
-# SPA fallbacks
-/tools/task-smasher/* /tools/task-smasher/index.html 200
-/* /index.html 200
+# Catch all fallback
+/*                /index.html            200
