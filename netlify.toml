@@ -15,16 +15,29 @@
   to = "/index.html"
   status = 200
 
-# Redirects for the TaskSmasher app
+# Redirects for the TaskSmasher app - handle base path
 [[redirects]]
   from = "/tools/task-smasher/*"
   to = "/tools/task-smasher/index.html"
   status = 200
 
+# Handle paths with and without trailing slashes for use cases
+
 # Specific redirects for TaskSmasher use cases
+# Specific redirects for all use cases - handle both with and without trailing slashes
+[[redirects]]
+  from = "/tools/task-smasher/marketing-tasks"
+  to = "/tools/task-smasher/marketing-tasks/index.html"
+  status = 200
+
 [[redirects]]
   from = "/tools/task-smasher/marketing-tasks/*"
   to = "/tools/task-smasher/marketing-tasks/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/tools/task-smasher/daily-organizer"
+  to = "/tools/task-smasher/daily-organizer/index.html"
   status = 200
 
 [[redirects]]
@@ -33,13 +46,115 @@
   status = 200
 
 [[redirects]]
+  from = "/tools/task-smasher/goal-planner"
+  to = "/tools/task-smasher/goal-planner/index.html"
+  status = 200
+
+[[redirects]]
   from = "/tools/task-smasher/goal-planner/*"
   to = "/tools/task-smasher/goal-planner/index.html"
+  status = 200
+
+# Add similar rules for all other use cases
+[[redirects]]
+  from = "/tools/task-smasher/recipe-steps"
+  to = "/tools/task-smasher/recipe-steps/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/tools/task-smasher/recipe-steps/*"
+  to = "/tools/task-smasher/recipe-steps/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/tools/task-smasher/home-chores"
+  to = "/tools/task-smasher/home-chores/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/tools/task-smasher/home-chores/*"
+  to = "/tools/task-smasher/home-chores/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/tools/task-smasher/freelancer-projects"
+  to = "/tools/task-smasher/freelancer-projects/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/tools/task-smasher/freelancer-projects/*"
+  to = "/tools/task-smasher/freelancer-projects/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/tools/task-smasher/trip-planner"
+  to = "/tools/task-smasher/trip-planner/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/tools/task-smasher/trip-planner/*"
+  to = "/tools/task-smasher/trip-planner/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/tools/task-smasher/shopping-tasks"
+  to = "/tools/task-smasher/shopping-tasks/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/tools/task-smasher/shopping-tasks/*"
+  to = "/tools/task-smasher/shopping-tasks/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/tools/task-smasher/study-plan"
+  to = "/tools/task-smasher/study-plan/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/tools/task-smasher/study-plan/*"
+  to = "/tools/task-smasher/study-plan/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/tools/task-smasher/event-planning"
+  to = "/tools/task-smasher/event-planning/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/tools/task-smasher/event-planning/*"
+  to = "/tools/task-smasher/event-planning/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/tools/task-smasher/diy-projects"
+  to = "/tools/task-smasher/diy-projects/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/tools/task-smasher/diy-projects/*"
+  to = "/tools/task-smasher/diy-projects/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/tools/task-smasher/creative-projects"
+  to = "/tools/task-smasher/creative-projects/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/tools/task-smasher/creative-projects/*"
+  to = "/tools/task-smasher/creative-projects/index.html"
   status = 200
 
 # API redirects for serverless functions
 [[redirects]]
   from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+# API redirects for TaskSmasher app
+[[redirects]]
+  from = "/tools/task-smasher/api/*"
   to = "/.netlify/functions/:splat"
   status = 200
 

@@ -8,9 +8,9 @@ const Tools: React.FC = () => {
       name: 'TaskSmasher',
       description: 'Turn a single word into a fully organised task list.',
       useCases: [
-        { name: 'Marketing Tasks', path: '/tools/task-smasher/marketing-tasks' },
-        { name: 'Daily Organizer', path: '/tools/task-smasher/daily-organizer' },
-        { name: 'Goal Planner', path: '/tools/task-smasher/goal-planner' }
+        { name: 'Marketing Tasks', path: '/tools/task-smasher/marketing-tasks/' },
+        { name: 'Daily Organizer', path: '/tools/task-smasher/daily-organizer/' },
+        { name: 'Goal Planner', path: '/tools/task-smasher/goal-planner/' }
       ],
       icon: ListChecks,
       color: 'from-purple-500 to-purple-600',
@@ -82,6 +82,19 @@ const Tools: React.FC = () => {
                     <a
                       href={tool.id === 'task-smasher' ? '/tools/task-smasher/' : `#${tool.id}`}
                       className="inline-flex items-center text-primary hover:text-primary-dark font-medium"
+                      onClick={(e) => {
+                        if (tool.id === 'task-smasher') {
+                          e.preventDefault();
+                          // Add a loading class to the body
+                          document.body.classList.add('page-transition');
+                          // Store the destination URL
+                          const href = e.currentTarget.getAttribute('href');
+                          // Navigate after a short delay to allow transition to show
+                          setTimeout(() => {
+                            window.location.href = href || '/tools/task-smasher/';
+                          }, 300);
+                        }
+                      }}
                     >
                       Try now <span className="ml-1">→</span>
                     </a>
@@ -93,6 +106,17 @@ const Tools: React.FC = () => {
                             key={useCase.path}
                             href={useCase.path}
                             className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-800 px-2 py-1 rounded-full transition-colors"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              // Add a loading class to the body
+                              document.body.classList.add('page-transition');
+                              // Store the destination URL
+                              const href = e.currentTarget.getAttribute('href');
+                              // Navigate after a short delay to allow transition to show
+                              setTimeout(() => {
+                                window.location.href = href || '/tools/task-smasher/';
+                              }, 300);
+                            }}
                           >
                             {useCase.name}
                           </a>
