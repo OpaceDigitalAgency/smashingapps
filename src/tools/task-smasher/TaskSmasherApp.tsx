@@ -4,8 +4,25 @@ import React, { useEffect } from 'react';
 // This preserves all the functionality while we work on proper integration
 const TaskSmasherApp: React.FC = () => {
   useEffect(() => {
-    // Redirect to the original TaskSmasher app URL
-    window.location.href = 'https://singular-palmier-8967b3.netlify.app/tools/task-smasher/';
+    // Get the current path
+    const currentPath = window.location.pathname;
+    
+    // Extract the use case path if it exists
+    let redirectPath = 'https://singular-palmier-8967b3.netlify.app/tools/task-smasher/';
+    
+    // Check if we're on a specific use case page
+    if (currentPath.includes('/tools/task-smasher/') && currentPath !== '/tools/task-smasher/' && currentPath !== '/tools/task-smasher') {
+      // Extract the use case part (e.g., "daily-organizer")
+      const useCasePath = currentPath.split('/tools/task-smasher/')[1];
+      
+      // Add it to the redirect URL
+      if (useCasePath) {
+        redirectPath = `https://singular-palmier-8967b3.netlify.app/tools/task-smasher/${useCasePath}`;
+      }
+    }
+    
+    // Redirect to the appropriate URL
+    window.location.href = redirectPath;
   }, []);
   
   // Return a loading message while redirecting
