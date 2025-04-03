@@ -10,6 +10,62 @@ body {
   @apply font-nunito text-gray-800 bg-gray-50;
 }
 
+:root {
+  /* Use case specific colors */
+  --daily-primary: theme('colors.blue.500');
+  --daily-light: theme('colors.blue.50');
+  --daily-secondary: theme('colors.blue.100');
+  
+  --goals-primary: theme('colors.emerald.500');
+  --goals-light: theme('colors.emerald.50');
+  --goals-secondary: theme('colors.emerald.100');
+  
+  --marketing-primary: theme('colors.violet.500');
+  --marketing-light: theme('colors.violet.50');
+  --marketing-secondary: theme('colors.violet.100');
+  
+  --recipe-primary: theme('colors.amber.500');
+  --recipe-light: theme('colors.amber.50');
+  --recipe-secondary: theme('colors.amber.100');
+  
+  --home-primary: theme('colors.teal.500');
+  --home-light: theme('colors.teal.50');
+  --home-secondary: theme('colors.teal.100');
+  
+  --freelance-primary: theme('colors.indigo.500');
+  --freelance-light: theme('colors.indigo.50');
+  --freelance-secondary: theme('colors.indigo.100');
+  
+  --travel-primary: theme('colors.sky.500');
+  --travel-light: theme('colors.sky.50');
+  --travel-secondary: theme('colors.sky.100');
+  
+  --shopping-primary: theme('colors.pink.500');
+  --shopping-light: theme('colors.pink.50');
+  --shopping-secondary: theme('colors.pink.100');
+  
+  --study-primary: theme('colors.yellow.500');
+  --study-light: theme('colors.yellow.50');
+  --study-secondary: theme('colors.yellow.100');
+  
+  --events-primary: theme('colors.purple.500');
+  --events-light: theme('colors.purple.50');
+  --events-secondary: theme('colors.purple.100');
+  
+  --diy-primary: theme('colors.orange.500');
+  --diy-light: theme('colors.orange.50');
+  --diy-secondary: theme('colors.orange.100');
+  
+  --creative-primary: theme('colors.rose.500');
+  --creative-light: theme('colors.rose.50');
+  --creative-secondary: theme('colors.rose.100');
+  
+  /* Default colors - using daily as default */
+  --primary-color: var(--daily-primary);
+  --primary-light: var(--daily-light);
+  --secondary-light: var(--daily-secondary);
+}
+
 .hero-gradient {
   background: radial-gradient(circle at 50% 50%, rgba(124, 58, 237, 0.15) 0%, rgba(255, 214, 10, 0.1) 100%);
 }
@@ -64,4 +120,110 @@ body.page-transition {
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+/* Task card hover effects */
+.task-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+}
+
+/* Button hover animations */
+button {
+  transition: all 0.2s ease-in-out;
+}
+
+.premium-button {
+  background: linear-gradient(
+    135deg,
+    var(--primary-color),
+    color-mix(in srgb, var(--primary-color) 70%, white)
+  );
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.premium-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Smash effect animations */
+@keyframes smashStar {
+  0% {
+    transform: scale(0) rotate(0deg);
+    opacity: 0;
+  }
+  30% {
+    transform: scale(1.2) rotate(15deg);
+    opacity: 1;
+  }
+  70% {
+    transform: scale(1.1) rotate(-5deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.9) rotate(0deg);
+    opacity: 0;
+  }
+}
+
+@keyframes smashText {
+  0% {
+    transform: scale(0) rotate(-10deg);
+    opacity: 0;
+  }
+  30% {
+    transform: scale(1.4) rotate(5deg);
+    opacity: 1;
+  }
+  60% {
+    transform: scale(1.2) rotate(-2deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0) rotate(0deg);
+    opacity: 0;
+  }
+}
+
+/* Smash effect styling */
+.smash-effect {
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+.smash-star {
+  animation: smashStar 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2));
+}
+
+.smash-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-weight: 800;
+  font-size: 16px;
+  animation: smashText 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  opacity: 0;
+  white-space: nowrap;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+#root {
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(135deg, 
+    var(--primary-light),
+    theme('colors.white'),
+    var(--secondary-light)
+  );
+  transition: all 0.5s ease-in-out;
+}
+
+.backdrop-blur-sm {
+  backdrop-filter: blur(4px);
 }
