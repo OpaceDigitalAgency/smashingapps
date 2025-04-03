@@ -1,23 +1,86 @@
 import React from 'react';
 
-// A simplified version of the TaskSmasher app that doesn't redirect
+// Import the TaskSmasher components
+import Board from './components/Board';
+import Sidebar from './components/Sidebar';
+import { TasksProvider } from './hooks/useTasksContext';
+import { useTasksContext } from './hooks/useTasksContext';
+import ReCaptchaProvider from './components/ReCaptchaProvider';
+import TaskMismatchPopup from './components/TaskMismatchPopup';
+
+// Main TaskSmasher App component
 const TaskSmasherApp: React.FC = () => {
+  // Use a default use case
+  const initialUseCase = 'daily';
+
+  return (
+    <ReCaptchaProvider>
+      <TasksProvider initialUseCase={initialUseCase}>
+        <TaskSmasherContent />
+      </TasksProvider>
+    </ReCaptchaProvider>
+  );
+};
+
+// Separate component to use the TasksContext
+const TaskSmasherContent: React.FC = () => {
+  const {
+    boards,
+    newTask,
+    setNewTask,
+    editingBoardId,
+    setEditingBoardId,
+    activeTask,
+    feedback,
+    setFeedback,
+    generating,
+    showContextInput,
+    setShowContextInput,
+    contextInput,
+    setContextInput,
+    isListening,
+    breakdownLevel,
+    setBreakdownLevel,
+    filterPriority,
+    setFilterPriority,
+    filterRating,
+    setFilterRating,
+    activeId,
+    setActiveId,
+    isDraggingOver,
+    setIsDraggingOver,
+    editing,
+    taskMismatch,
+    setTaskMismatch,
+    handleAddTask,
+    startEditing,
+    handleEditSave,
+    updateTaskPriority,
+    addSubtask,
+    updateBoardTitle,
+    toggleExpanded,
+    startVoiceInput,
+    stopVoiceInput,
+    handleUndo,
+    regenerateTask,
+    handleGenerateSubtasks,
+    handleSelectUseCase,
+    selectedUseCase,
+    handleGenerateIdeas,
+    toggleComplete,
+    showFeedback,
+    submitFeedback,
+    updateContext,
+    deleteTask,
+    getFilteredTasks
+  } = useTasksContext();
+
   return (
     <div className="min-h-screen w-full flex">
-      <div className="w-64 bg-white border-r border-gray-200 p-4 flex flex-col gap-2 shadow-sm z-10">
-        <h2 className="text-lg font-semibold text-gray-900 mb-2">Use Case Categories</h2>
-        <div className="flex flex-col gap-2">
-          <a href="/tools/task-smasher/daily-organizer/" className="flex items-center gap-2 px-3 py-2 rounded-lg bg-indigo-50 text-indigo-700">
-            <span>Daily Organizer</span>
-          </a>
-          <a href="/tools/task-smasher/goal-planner/" className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50">
-            <span>Goal Planner</span>
-          </a>
-          <a href="/tools/task-smasher/marketing-tasks/" className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50">
-            <span>Marketing Tasks</span>
-          </a>
-        </div>
-      </div>
+      <Sidebar 
+        selectedUseCase={selectedUseCase || 'daily'} 
+        onSelectUseCase={handleSelectUseCase} 
+      />
       
       <div className="flex-1 bg-gradient-to-br from-indigo-50 via-white to-purple-50 p-6 overflow-auto">
         <div className="bg-white/80 backdrop-blur-sm rounded-lg shadow-sm border border-gray-200/80 p-4 mb-6">
@@ -28,53 +91,72 @@ const TaskSmasherApp: React.FC = () => {
               </h1>
               <div className="ml-4 text-sm text-gray-500">AI-powered task management</div>
             </div>
+            
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <form onSubmit={handleAddTask} className="flex-1 flex gap-2">
+                <input
+                  type="text"
+                  value={newTask}
+                  onChange={(e) => setNewTask(e.target.value)}
+                  placeholder="Add a new task..."
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                />
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                >
+                  Add
+                </button>
+              </form>
+            </div>
           </div>
         </div>
         
-        <header className="mb-8">
-          <div className="flex flex-wrap items-center gap-4">
-            <h2 className="text-xl font-semibold">Manage Your Tasks</h2>
-          </div>
-        </header>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="bg-white/90 rounded-lg border border-gray-200 p-4 shadow-sm">
-            <h3 className="font-medium text-gray-900 mb-3">To Do</h3>
-            <div className="space-y-2">
-              <div className="p-3 bg-white rounded-lg border border-gray-200 shadow-sm">
-                <div className="flex justify-between">
-                  <span className="font-medium">Create project plan</span>
-                  <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">High</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-white/90 rounded-lg border border-gray-200 p-4 shadow-sm">
-            <h3 className="font-medium text-gray-900 mb-3">In Progress</h3>
-            <div className="space-y-2">
-              <div className="p-3 bg-white rounded-lg border border-gray-200 shadow-sm">
-                <div className="flex justify-between">
-                  <span className="font-medium">Design wireframes</span>
-                  <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded">Medium</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-white/90 rounded-lg border border-gray-200 p-4 shadow-sm">
-            <h3 className="font-medium text-gray-900 mb-3">Completed</h3>
-            <div className="space-y-2">
-              <div className="p-3 bg-white rounded-lg border border-gray-200 shadow-sm">
-                <div className="flex justify-between">
-                  <span className="font-medium text-gray-500 line-through">Research competitors</span>
-                  <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded">Done</span>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {boards.map((board) => (
+            <Board
+              key={board.id}
+              board={board}
+              tasks={getFilteredTasks(board.id)}
+              editingBoardId={editingBoardId}
+              setEditingBoardId={setEditingBoardId}
+              updateBoardTitle={updateBoardTitle}
+              onToggleExpanded={toggleExpanded}
+              onToggleComplete={toggleComplete}
+              onShowFeedback={showFeedback}
+              onDeleteTask={deleteTask}
+              onGenerateSubtasks={handleGenerateSubtasks}
+              onAddSubtask={addSubtask}
+              onRegenerateTask={regenerateTask}
+              showContextInput={showContextInput}
+              setShowContextInput={setShowContextInput}
+              contextInput={contextInput}
+              setContextInput={setContextInput}
+              updateContext={updateContext}
+              generating={generating}
+              activeTask={activeTask}
+              editing={editing}
+              startEditing={startEditing}
+              handleEditSave={handleEditSave}
+              updateTaskPriority={updateTaskPriority}
+              isDraggingOver={isDraggingOver}
+            />
+          ))}
         </div>
       </div>
+      
+      {taskMismatch.showing && (
+        <TaskMismatchPopup
+          isVisible={taskMismatch.showing}
+          reason={taskMismatch.reason}
+          suggestedUseCase={taskMismatch.suggestedUseCase}
+          onClose={() => setTaskMismatch({ ...taskMismatch, showing: false })}
+          onSwitchUseCase={(useCase) => {
+            handleSelectUseCase(useCase);
+            setTaskMismatch({ ...taskMismatch, showing: false });
+          }}
+        />
+      )}
     </div>
   );
 };
