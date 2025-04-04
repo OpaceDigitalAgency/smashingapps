@@ -11,13 +11,21 @@ import Testimonials from './components/Testimonials';
 import CTA from './components/CTA';
 import Footer from './components/Footer';
 
-// Import TaskSmasher wrapper
+// Import simplified TaskSmasher component
 import TaskSmasherApp from './tools/task-smasher/TaskSmasherApp';
 
-// Import the TaskSmasher context providers and use case definitions directly
-import { TasksProvider } from '../tools/task-smasher/src/hooks/useTasksContext';
-import ReCaptchaProvider from '../tools/task-smasher/src/components/ReCaptchaProvider';
-import { useCaseDefinitions } from '../tools/task-smasher/src/utils/useCaseDefinitions';
+// Define placeholder use cases for routing
+const useCaseDefinitions = {
+  daily: { label: "Daily Organizer", description: "Everyday tasks" },
+  goals: { label: "Goal Planner", description: "Long-term objectives" },
+  marketing: { label: "Marketing Tasks", description: "Marketing campaigns" },
+  recipe: { label: "Recipe Steps", description: "Cooking recipes" },
+  home: { label: "Home Chores", description: "Household tasks" },
+  travel: { label: "Trip Planner", description: "Travel planning" },
+  study: { label: "Study Plan", description: "Academic tasks" },
+  events: { label: "Event Planning", description: "Party planning" },
+  freelance: { label: "Freelancer Projects", description: "Client work" }
+};
 
 // HomePage component for the root route
 const HomePage = () => (
@@ -49,44 +57,17 @@ function App() {
           <Route path="/" element={<HomePage />} />
           
           {/* TaskSmasher base routes - handle both with and without trailing slash */}
-          <Route
-            path="/tools/task-smasher"
-            element={
-              <ReCaptchaProvider>
-                <TasksProvider initialUseCase="daily">
-                  <TaskSmasherApp />
-                </TasksProvider>
-              </ReCaptchaProvider>
-            }
-          />
-          
-          <Route
-            path="/tools/task-smasher/"
-            element={
-              <ReCaptchaProvider>
-                <TasksProvider initialUseCase="daily">
-                  <TaskSmasherApp />
-                </TasksProvider>
-              </ReCaptchaProvider>
-            }
-          />
+          <Route path="/tools/task-smasher" element={<TaskSmasherApp />} />
+          <Route path="/tools/task-smasher/" element={<TaskSmasherApp />} />
           
           {/* TaskSmasher use case routes - handle both with and without trailing slash */}
           {Object.entries(useCaseDefinitions).flatMap(([id, definition]) => {
             const basePath = `/tools/task-smasher/${definition.label.toLowerCase().replace(/\s+/g, '-')}`;
             const pathWithSlash = `${basePath}/`;
             
-            const routeElement = (
-              <ReCaptchaProvider>
-                <TasksProvider initialUseCase={id}>
-                  <TaskSmasherApp />
-                </TasksProvider>
-              </ReCaptchaProvider>
-            );
-            
             return [
-              <Route key={`${id}-no-slash`} path={basePath} element={routeElement} />,
-              <Route key={`${id}-with-slash`} path={pathWithSlash} element={routeElement} />
+              <Route key={`${id}-no-slash`} path={basePath} element={<TaskSmasherApp />} />,
+              <Route key={`${id}-with-slash`} path={pathWithSlash} element={<TaskSmasherApp />} />
             ];
           })}
           

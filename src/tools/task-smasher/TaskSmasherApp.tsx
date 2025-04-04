@@ -12,34 +12,38 @@ import {
 } from '@dnd-kit/core';
 import { SortableContext, arrayMove } from '@dnd-kit/sortable';
 
-// Import the TaskSmasher components
+import { TasksProvider, useTasksContext } from './hooks/useTasksContext'; // Import TasksProvider
+import { exportToExcel, exportToPDF } from './utils/taskUtils';
+import { useCaseDefinitions } from './utils/useCaseDefinitions';
 import Board from './components/Board';
 import Task from './components/Task';
 import Sidebar from './components/Sidebar';
-import { TasksProvider } from './hooks/useTasksContext';
-import { useTasksContext } from './hooks/useTasksContext';
-import ReCaptchaProvider from './components/ReCaptchaProvider';
 import TaskMismatchPopup from './components/TaskMismatchPopup';
 import OpenAIExample from './components/OpenAIExample';
-import { exportToExcel, exportToPDF } from './utils/taskUtils';
-import { useCaseDefinitions } from './utils/useCaseDefinitions';
+import ReCaptchaProvider from './components/ReCaptchaProvider'; // Import ReCaptchaProvider
 
-// Main TaskSmasher App component
+// Define props for the content component
+interface TaskSmasherAppContentProps {
+  initialUseCase?: string;
+}
+
+// Define the main wrapper component
 const TaskSmasherApp: React.FC = () => {
-  // Use a default use case
+  // Use a default use case or get it from props/context if needed later
   const initialUseCase = 'daily';
 
   return (
     <ReCaptchaProvider>
       <TasksProvider initialUseCase={initialUseCase}>
-        <TaskSmasherContent />
+        <TaskSmasherAppContent initialUseCase={initialUseCase} />
       </TasksProvider>
     </ReCaptchaProvider>
   );
 };
 
+
 // Separate component to use the TasksContext
-const TaskSmasherContent: React.FC = () => {
+function TaskSmasherAppContent({ initialUseCase }: TaskSmasherAppContentProps) {
   const {
     selectedModel,
     setSelectedModel,
@@ -214,78 +218,21 @@ const TaskSmasherContent: React.FC = () => {
 
   // Add useEffect to handle fade-in animation when app loads
   useEffect(() => {
-    // Add CSS animation styles dynamically
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes shrink {
-        0% { width: 100%; }
-        100% { width: 0%; }
-      }
-      
-      .animate-in {
-        animation: pop-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-      }
-      
-      .animate-out {
-        animation: pop-out 0.5s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards;
-      }
-      
-      @keyframes pop-in {
-        0% { transform: translate(-50%, -30%) scale(0.95); opacity: 0; }
-        100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-      }
-      
-      @keyframes pop-out {
-        0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-        100% { transform: translate(-50%, -30%) scale(0.95); opacity: 0; }
-      }
-
-      .smash-effect {
-        position: relative;
-        animation: smash-anim 0.8s ease-out forwards;
-      }
-      
-      .smash-star {
-        animation: star-spin 0.8s ease-out forwards;
-        transform-origin: center;
-      }
-      
-      .smash-text {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        color: white;
-        font-weight: bold;
-        font-size: 14px;
-        text-shadow: 0 1px 3px rgba(0,0,0,0.3);
-      }
-      
-      @keyframes smash-anim {
-        0% { transform: scale(0.2); opacity: 0; }
-        20% { transform: scale(1.2); opacity: 1; }
-        100% { transform: scale(1.5); opacity: 0; }
-      }
-      
-      @keyframes star-spin {
-        0% { transform: rotate(0deg) scale(0.2); }
-        20% { transform: rotate(180deg) scale(1.2); }
-        100% { transform: rotate(360deg) scale(1.5); }
-      }
-    `;
-    document.head.appendChild(style);
-    
-    return () => {
-      document.head.removeChild(style);
-    };
+    // Add fade-in class to root element
+    const rootElement = document.getElementById('root');
+    if (rootElement) {
+      rootElement.classList.add('opacity-0');
+      // Small delay to ensure transition happens
+      setTimeout(() => {
+        rootElement.classList.remove('opacity-0');
+        rootElement.classList.add('opacity-100', 'transition-opacity', 'duration-500');
+      }, 100);
+    }
   }, []);
 
   return (
-    <div className="min-h-screen w-full flex">
-      <Sidebar 
-        selectedUseCase={selectedUseCase || 'daily'} 
-        onSelectUseCase={handleSelectUseCase} 
-      />
+    <div className="min-h-screen w-full flex fade-in-app">
+      <Sidebar selectedUseCase={selectedUseCase} onSelectUseCase={handleSelectUseCase} />
       
       <div className="flex-1 bg-gradient-to-br from-indigo-50 via-white to-purple-50 p-6 overflow-auto transition-colors duration-500" 
            style={{
@@ -294,15 +241,31 @@ const TaskSmasherContent: React.FC = () => {
         <div className="bg-white/80 backdrop-blur-sm rounded-lg shadow-sm border border-gray-200/80 p-4 mb-6 transition-all duration-300">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full sm:w-auto">
+              {/* API key input removed - now using secure backend proxy */}
               <select
                 value={selectedModel}
                 onChange={(e) => setSelectedModel(e.target.value)}
                 className="px-3 py-1.5 text-sm rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white w-full sm:w-[250px] appearance-none bg-no-repeat bg-right"
                 style={{ backgroundImage: "url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20fill%3D%22%23555%22%20d%3D%22M6%208L0%202h12z%22%2F%3E%3C%2Fsvg%3E')", backgroundPosition: "right 0.5rem center", paddingRight: "2rem" }}
               >
-                <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
-                <option value="gpt-4">GPT-4</option>
-                <option value="gpt-4o">GPT-4o</option>
+                <optgroup label="Featured models">
+                  <option value="gpt-4.5-preview">GPT-4.5 Preview - Largest and most capable</option>
+                  <option value="o3-mini">o3-mini - Fast, flexible reasoning</option>
+                  <option value="gpt-4o">GPT-4o - Fast, intelligent, flexible</option>
+                </optgroup>
+                <optgroup label="Reasoning models">
+                  <option value="o1">o1 - High-intelligence reasoning</option>
+                  <option value="o1-mini">o1-mini - Fast, affordable reasoning</option>
+                  <option value="o1-pro">o1-pro - Enhanced compute version</option>
+                </optgroup>
+                <optgroup label="Cost-optimized models">
+                  <option value="gpt-4o-mini">GPT-4o mini - Fast, affordable</option>
+                </optgroup>
+                <optgroup label="Legacy models">
+                  <option value="gpt-4-turbo">GPT-4 Turbo - Previous generation</option>
+                  <option value="gpt-4">GPT-4 - Standard version</option>
+                  <option value="gpt-3.5-turbo">GPT-3.5 Turbo - Most affordable</option>
+                </optgroup>
               </select>
             </div>
             <div className="flex items-center gap-6">
@@ -314,6 +277,17 @@ const TaskSmasherContent: React.FC = () => {
                 <DollarSign className="w-4 h-4 text-green-500" />
                 <span className="text-gray-600">Estimated cost: ${totalCost.toFixed(4)}</span>
               </div>
+              {typeof rateLimited !== 'undefined' && rateLimited ? (
+                <div className="flex items-center gap-2 text-sm bg-red-50 text-red-600 px-2 py-1 rounded-md">
+                  <Info className="w-4 h-4" />
+                  <span>API Limit Reached! Reset at {new Date(rateLimitInfo.reset).toLocaleTimeString()}</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 text-sm bg-blue-50 text-blue-600 px-2 py-1 rounded-md">
+                  <Info className="w-4 h-4" />
+                  <span>API Usage: {rateLimitInfo.used} of {rateLimitInfo.limit} (Remaining: {rateLimitInfo.remaining})</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -323,7 +297,7 @@ const TaskSmasherContent: React.FC = () => {
             <div className="flex items-center gap-4 w-full sm:w-auto">
               <img src="/tools/task-smasher/assets/AITaskSmasher-small.png" alt="TaskSmasher Logo" className="w-8 h-8" />
               <h1 className="text-2xl font-bold text-gray-900">
-                TaskSmasher {selectedUseCase && useCaseDefinitions[selectedUseCase]?.label}
+                TaskSmasher {selectedUseCase && useCaseDefinitions[selectedUseCase]?.label} YY
               </h1>
               <div className="ml-4 text-sm text-gray-500">AI-powered task management</div>
             </div>
@@ -341,6 +315,14 @@ const TaskSmasherContent: React.FC = () => {
               >
                 <FilePdf className="w-4 h-4" />
                 <span className="hidden sm:inline">PDF</span>
+              </button>
+              {/* Undo button moved to a more intuitive location */}
+              <button
+                onClick={() => setShowOpenAIExample(!showOpenAIExample)}
+                className="text-gray-700 px-3 py-1.5 text-sm rounded-lg border border-gray-200 hover:bg-gray-50 flex items-center gap-2"
+              >
+                <MessageSquare className="w-4 h-4" />
+                <span className="hidden sm:inline">OpenAI Proxy</span>
               </button>
             </div>
           </div>
@@ -412,6 +394,19 @@ const TaskSmasherContent: React.FC = () => {
               }
             </button>
             
+            {/* Subtask Breakdown Slider Button */}
+            <button
+              className="flex items-center gap-2 px-3 py-2 bg-white/80 rounded-lg border border-gray-200 hover:bg-gray-50 text-gray-700 text-sm font-medium shadow-sm transition-all duration-200"
+              onClick={() => setSliderExpanded(!sliderExpanded)}
+            >
+              <Sliders className="w-4 h-4" />
+              <span>Number of subtasks: {breakdownLevel}</span>
+              {sliderExpanded ?
+                <ChevronUp className="w-4 h-4 ml-1" /> :
+                <ChevronDown className="w-4 h-4 ml-1" />
+              }
+            </button>
+            
             {/* Undo button next to filters */}
             <button
               onClick={handleUndo}
@@ -422,6 +417,122 @@ const TaskSmasherContent: React.FC = () => {
               <span>Undo</span>
             </button>
           </div>
+          
+          {/* Filters Panel */}
+          {filtersExpanded && (
+            <div className="bg-white/90 rounded-lg border border-gray-200 p-4 shadow-sm transition-all duration-300 mt-2 space-y-4">
+              <div>
+                <h3 className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-1.5">
+                  Priority Filter
+                </h3>
+                <div className="flex mb-2">
+                  <button
+                    onClick={() => setFilterPriority('all')}
+                    className={`px-3 py-1 text-sm rounded-l-md border border-r-0 ${
+                      filterPriority === 'all'
+                        ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
+                        : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
+                    }`}
+                  >
+                    All
+                  </button>
+                  <button
+                    onClick={() => setFilterPriority('high')}
+                    className={`px-3 py-1 text-sm border border-r-0 ${
+                      filterPriority === 'high'
+                        ? 'bg-red-50 text-red-700 border-red-200'
+                        : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
+                    }`}
+                  >
+                    High
+                  </button>
+                  <button
+                    onClick={() => setFilterPriority('medium')}
+                    className={`px-3 py-1 text-sm border border-r-0 ${
+                      filterPriority === 'medium'
+                        ? 'bg-orange-50 text-orange-700 border-orange-200'
+                        : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
+                    }`}
+                  >
+                    Medium
+                  </button>
+                  <button
+                    onClick={() => setFilterPriority('low')}
+                    className={`px-3 py-1 text-sm rounded-r-md border ${
+                      filterPriority === 'low'
+                        ? 'bg-gray-100 text-gray-700 border-gray-200'
+                        : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
+                    }`}
+                  >
+                    Low
+                  </button>
+                </div>
+              </div>
+              
+              <div>
+                <h3 className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-1.5">
+                  Rating Filter
+                  <Star className="w-4 h-4 text-yellow-400" />
+                </h3>
+                <div className="flex flex-wrap">
+                  <button
+                    onClick={() => setFilterRating(0)}
+                    className={`px-3 py-1 text-sm rounded-l-md border border-r-0 ${
+                      filterRating === 0
+                        ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
+                        : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
+                    }`}
+                  >
+                    All
+                  </button>
+                  {[5, 4, 3, 2, 1].map(rating => (
+                    <button
+                      key={rating}
+                      onClick={() => setFilterRating(rating as 1|2|3|4|5)}
+                      className={`px-3 py-1 text-sm border ${
+                        rating === 1 ? 'rounded-r-md' : 'border-r-0'
+                      } ${
+                        filterRating === rating
+                          ? 'bg-yellow-50 text-yellow-700 border-yellow-200'
+                          : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
+                      }`}
+                    >
+                      {rating}★
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {/* Subtask Breakdown Slider Panel - Completely Separate */}
+          {sliderExpanded && (
+            <div className="bg-white/90 rounded-lg border border-gray-200 p-4 shadow-sm transition-all duration-300 mt-2">
+              <h3 className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-1.5">
+                Subtask Breakdown Level
+                <span className="text-xs text-gray-500 ml-2">Controls how many subtasks AI generates</span>
+              </h3>
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-600">2</span>
+                <input
+                  type="range"
+                  value={breakdownLevel}
+                  onChange={(e) => setBreakdownLevel(Number(e.target.value))} 
+                  min="2"
+                  max="50"
+                  step="1"
+                  className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+                />
+                <span className="text-sm text-gray-600">50</span>
+                <span className="ml-2 text-sm font-medium bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-md min-w-[2.5rem] text-center">
+                  {breakdownLevel}
+                </span>
+              </div>
+              <p className="text-xs text-gray-500 mt-2">
+                Higher values create more detailed task breakdowns, but may increase generation time.
+              </p>
+            </div>
+          )}
         </header>
 
         <DndContext
@@ -494,6 +605,57 @@ const TaskSmasherContent: React.FC = () => {
           </DragOverlay>
         </DndContext>
 
+        {/* OpenAI Example Panel */}
+        {showOpenAIExample && (
+          <div className="mt-8 mb-4">
+            <div className="bg-white/80 backdrop-blur-sm rounded-lg shadow-md border border-gray-200/80 p-6">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold text-gray-900">OpenAI Proxy Example</h2>
+                <button
+                  onClick={() => setShowOpenAIExample(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <span className="sr-only">Close</span>
+                  &times;
+                </button>
+              </div>
+              <OpenAIExample />
+            </div>
+          </div>
+        )}
+
+        {/* Feedback Modal */}
+        {feedback.showing && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 max-w-md w-full">
+              <h3 className="text-lg font-medium mb-4">Rate this task</h3>
+              <div className="flex justify-between items-center gap-2 my-4">
+                {[1, 2, 3, 4, 5].map(rating => (
+                  <button
+                    key={rating}
+                    onClick={() => {
+                      submitFeedback(feedback.taskId, rating);
+                      // Add smash effect
+                      const rect = document.body.getBoundingClientRect();
+                      addSmashEffectAt(rect.width / 2, rect.height / 2);
+                    }}
+                    className="w-10 h-10 rounded-full flex items-center justify-center border hover:bg-indigo-50 hover:border-indigo-300 transition-colors"
+                  >
+                    {rating}
+                  </button>
+                ))}
+              </div>
+              <button
+                onClick={() => setFeedback({ taskId: '', showing: false })}
+                className="w-full mt-4 py-2 text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Task Mismatch Popup */}
         {taskMismatch.showing && (
           <TaskMismatchPopup
             isVisible={taskMismatch.showing}
@@ -509,6 +671,6 @@ const TaskSmasherContent: React.FC = () => {
       </div>
     </div>
   );
-};
+}
 
-export default TaskSmasherApp;
+export default TaskSmasherApp; // Export the main wrapper component

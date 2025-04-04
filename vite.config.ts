@@ -14,11 +14,16 @@ export default defineConfig({
   resolve: {
     alias: {
       // This helps us import from the task-smasher directory
-      '@task-smasher': resolve(__dirname, 'tools/task-smasher/src')
+      '@task-smasher': resolve(__dirname, 'src/tools/task-smasher')
     }
   },
   server: {
     // Ensure proper handling of routes like /tools/task-smasher/
-    historyApiFallback: true
+    proxy: {
+      '/api': {
+        target: '/.netlify/functions',
+        rewrite: (path) => path.replace(/^\/api/, '')
+      }
+    }
   }
 });

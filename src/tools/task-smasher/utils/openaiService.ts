@@ -91,7 +91,8 @@ export const OpenAIService = {
       
       // Use the Netlify function proxy instead of direct OpenAI API
       // Use relative path to ensure compatibility with all deployment environments
-      const response = await fetch('/api/openai-proxy', {
+      // For the integrated app, we need to use the correct path to the function
+      const response = await fetch('/.netlify/functions/openai-proxy', {
         method: 'POST',
         headers,
         body: JSON.stringify(request),
@@ -213,7 +214,7 @@ export const OpenAIService = {
       // Add a cache-busting parameter to prevent caching
       const cacheBuster = Date.now();
       // Use relative path to ensure compatibility with all deployment environments
-      const response = await fetch(`/api/openai-proxy/rate-limit-status?_=${cacheBuster}`, {
+      const response = await fetch(`/.netlify/functions/openai-proxy/rate-limit-status?_=${cacheBuster}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
